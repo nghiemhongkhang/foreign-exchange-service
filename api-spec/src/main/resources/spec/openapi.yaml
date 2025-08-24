@@ -1,0 +1,254 @@
+openapi: 3.0.3
+info:
+  title: Foreign Exchange Service
+  version: 1.0.0
+  description: |
+    Spring Boot (Java 17, Maven) service for Foreign Exchange Service
+
+servers:
+  - url: http://localhost:8080
+    description: Local dev
+
+paths:
+  /currencies:
+    get:
+      tags: [Currencies]
+      summary: List currencies (sorted by code)
+      description: Returns all currencies sorted by `code` ascending.
+      operationId: listCurrencies
+      responses:
+        '200':
+          description: Currency list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/CurrencyResponse' }
+    post:
+      tags: [Currencies]
+      summary: Create currency
+      operationId: createCurrency
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CurrencyCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyResponse'
+        '409':
+          description: Currency already exists
+
+  /currencies/{code}:
+    parameters:
+      - in: path
+        name: code
+        required: true
+        schema:
+          type: string
+          pattern: '^[A-Z]{3}$'
+        description: ISO 4217 currency code
+    get:
+      tags: [Currencies]
+      summary: Get currency by code
+      operationId: getCurrencyByCode
+      responses:
+        '200':
+          description: Currency found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyResponse'
+        '404':
+          description: Not found
+    put:
+      tags: [Currencies]
+      summary: Update currency
+      operationId: updateCurrency
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CurrencyUpdateRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyResponse'
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyResponse'
+    delete:
+      tags: [Currencies]
+      summary: Delete currency
+      operationId: deleteCurrency
+      responses:
+        '204': { description: Deleted }
+        '404': { description: Not found }
+
+  /fx/rates:
+    get:
+      tags: [FX]
+      summary: Get normalized FX rates time-series (converted from OANDA response)
+      description: |
+        Returns time-series of average rates for a base/quote pair over a date range. The service calls
+        OANDA's public converter endpoint under the hood and converts its fields into the schema below.
+
+        * `updateTime` is formatted as **yyyy/MM/dd HH:mm:ss** (UTC recommended).
+        * `startDate`/`endDate` use **yyyy-MM-dd**.
+      operationId: getFxRates
+      parameters:
+        - in: query
+          name: base
+          required: true
+          description: Base currency (ISO 4217). For the assignment, ensure at least EUR, USD, JPY, TWD are supported.
+          schema:
+            type: string
+            pattern: '^[A-Z]{3}$'
+            example: EUR
+        - in: query
+          name: quote
+          description: Quote currency (ISO 4217). Defaults to USD.
+          schema:
+            type: string
+            pattern: '^[A-Z]{3}$'
+            default: USD
+        - in: query
+          name: startDate
+          required: true
+          schema: { type: string, pattern: '^\d{4}-\d{2}-\d{2}$' }
+          description: Inclusive start date (yyyy-MM-dd)
+          example: '2025-03-26'
+        - in: query
+          name: endDate
+          required: true
+          schema: { type: string, pattern: '^\d{4}-\d{2}-\d{2}$' }
+          description: Inclusive end date (yyyy-MM-dd)
+          example: '2025-03-27'
+      responses:
+        '200':
+          description: Normalized FX rates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FxRatesResponse'
+              examples:
+                sample:
+                  value:
+                    updateTime: '2025/03/27 10:15:00'
+                    source: 'OANDA FXDS'
+                    base: EUR
+                    quote: USD
+                    startDate: '2025-03-26'
+                    endDate: '2025-03-27'
+                    points:
+                      - date: '2025-03-26'
+                        averageBid: 1.0823
+                        averageAsk: 1.0831
+                        averageMid: 1.0827
+                      - date: '2025-03-27'
+                        averageBid: 1.0819
+                        averageAsk: 1.0828
+                        averageMid: 1.0824
+        '400':
+          description: Validation error
+        '502':
+          description: Upstream (OANDA) failure
+
+components:
+  schemas:
+    CurrencyCreateRequest:
+      type: object
+      required: [code, name]
+      properties:
+        code:
+          type: string
+          pattern: '^[A-Z]{3}$'
+        name:
+          type: string
+
+    CurrencyUpdateRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+
+    CurrencyResponse:
+      type: object
+      required: [code, name]
+      properties:
+        code:
+          type: string
+          pattern: '^[A-Z]{3}$'
+          description: ISO 4217 currency code
+          example: EUR
+        name:
+          type: string
+          example: Euro
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    FxPoint:
+      type: object
+      description: Aggregated daily averages derived from OANDA `data_type=chart` results.
+      properties:
+        date:
+          type: string
+          description: Day in yyyy-MM-dd
+          example: '2025-03-26'
+        averageBid:
+          type: number
+          format: double
+          example: 1.0823
+        averageAsk:
+          type: number
+          format: double
+          example: 1.0831
+        averageMid:
+          type: number
+          format: double
+          example: 1.0827
+
+    FxRatesResponse:
+      type: object
+      required: [updateTime, source, base, quote, startDate, endDate, points]
+      properties:
+        updateTime:
+          type: string
+          description: Update time in format yyyy/MM/dd HH:mm:ss (UTC)
+          example: '2025/03/27 10:15:00'
+        source:
+          type: string
+          example: OANDA FXDS
+        base:
+          type: string
+          pattern: '^[A-Z]{3}$'
+        quote:
+          type: string
+          pattern: '^[A-Z]{3}$'
+        startDate:
+          type: string
+          example: '2025-03-26'
+        endDate:
+          type: string
+          example: '2025-03-27'
+        points:
+          type: array
+          items: { $ref: '#/components/schemas/FxPoint' }
+
+security: []
