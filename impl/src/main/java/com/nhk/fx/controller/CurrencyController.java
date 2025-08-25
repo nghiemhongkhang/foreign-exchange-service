@@ -18,12 +18,9 @@ public class CurrencyController implements CurrenciesApi {
     @Autowired
     CurrencyService currencyService;
 
-    @Autowired
-    CurrencyMapper currencyMapper;
-
     @Override
     public ResponseEntity<CurrencyResponse> createCurrency(CurrencyCreateRequest currencyCreateRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(currencyMapper.toResponse(currencyService.create(currencyCreateRequest)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(currencyService.create(currencyCreateRequest));
     }
 
     @Override
@@ -34,16 +31,16 @@ public class CurrencyController implements CurrenciesApi {
 
     @Override
     public ResponseEntity<CurrencyResponse> getCurrencyByCode(String code) {
-        return ResponseEntity.status(HttpStatus.OK).body(currencyMapper.toResponse(currencyService.getByCode(code)));
+        return ResponseEntity.status(HttpStatus.OK).body(currencyService.getByCode(code));
     }
 
     @Override
     public ResponseEntity<List<CurrencyResponse>> listCurrencies() {
-        return ResponseEntity.status(HttpStatus.OK).body(currencyMapper.toResponseList(currencyService.listAllSortedByCode()));
+        return ResponseEntity.status(HttpStatus.OK).body(currencyService.listAllSortedByCode());
     }
 
     @Override
     public ResponseEntity<CurrencyResponse> updateCurrency(String code, CurrencyUpdateRequest currencyUpdateRequest) {
-        return ResponseEntity.ok(currencyMapper.toResponse(currencyService.update(code, currencyUpdateRequest)));
+        return ResponseEntity.ok(currencyService.update(code, currencyUpdateRequest));
     }
 }

@@ -1,13 +1,16 @@
 package com.nhk.fx.service.impl;
 
 import com.nhk.fx.dto.CurrencyCreateRequest;
+import com.nhk.fx.dto.CurrencyResponse;
 import com.nhk.fx.dto.CurrencyUpdateRequest;
 import com.nhk.fx.entity.Currency;
-import com.nhk.fx.exception.BusinessException;
+import com.nhk.fx.exception.model.BusinessException;
+import com.nhk.fx.mapper.CurrencyMapper;
 import com.nhk.fx.repository.CurrencyRepository;
 import com.nhk.fx.service.CurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,38 +21,41 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Autowired
     CurrencyRepository currencyRepository;
 
+    @Autowired
+    CurrencyMapper currencyMapper;
+
     @Override
-    public List<Currency> listAllSortedByCode() {
-        return currencyRepository.findAll(Sort.by(Sort.Direction.ASC, "code"));
+    public List<CurrencyResponse> listAllSortedByCode() {
+        return currencyMapper.toResponseList(currencyRepository.findAll(Sort.by(Sort.Direction.ASC, "code")));
     }
 
     @Override
-    public Currency getByCode(String code) {
-        return currencyRepository.findById(code)
-                .orElseThrow(() -> new BusinessException(404, "Not Found", "Currency not found: " + code));
+    public CurrencyResponse getByCode(String code) {
+        return currencyMapper.toResponse(currencyRepository.findById(code)
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Currency not found: " + code)));
     }
 
     @Override
-    public Currency create(CurrencyCreateRequest currencyCreateRequest) {
+    public CurrencyResponse create(CurrencyCreateRequest currencyCreateRequest) {
         if (currencyRepository.existsById(currencyCreateRequest.getCode())) {
-            throw new BusinessException(409, "Conflict", "Currency already exists: " + currencyCreateRequest.getCode());
+            throw new BusinessException(HttpStatus.CONFLICT, "Currency already exists: " + currencyCreateRequest.getCode());
         }
-        Currency currency = new Currency(currencyCreateRequest.getCode(), currencyCreateRequest.getName());
-        return currencyRepository.save(currency);
+        var currency = new Currency(currencyCreateRequest.getCode(), currencyCreateRequest.getName());
+        return currencyMapper.toResponse(currencyRepository.save(currency));
     }
 
     @Override
-    public Currency update(String code, CurrencyUpdateRequest currencyUpdateRequest) {
-        Currency currency = currencyRepository.findById(code)
-                .orElseThrow(() -> new BusinessException(404, "Not Found", "Currency not found: " + code));
+    public CurrencyResponse update(String code, CurrencyUpdateRequest currencyUpdateRequest) {
+        var currency = currencyRepository.findById(code)
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Currency not found: " + code));
         currency.setName(currencyUpdateRequest.getName());
-        return currencyRepository.save(currency);
+        return currencyMapper.toResponse(currencyRepository.save(currency));
     }
 
     @Override
     public void delete(String code) {
         if (!currencyRepository.existsById(code)) {
-            throw new BusinessException(404, "Not Found", "Currency not found: " + code);
+            throw new BusinessException(HttpStatus.NOT_FOUND, "Currency not found: " + code);
         }
         currencyRepository.deleteById(code);
     }
