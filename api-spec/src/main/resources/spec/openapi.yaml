@@ -155,11 +155,17 @@ paths:
                       - date: '2025-03-26'
                         averageBid: 1.0823
                         averageAsk: 1.0831
-                        averageMid: 1.0827
+                        highBid: 1.0827
+                        highAsk: 1.0827
+                        lowBid: 1.0826
+                        lowAsk: 1.0826
                       - date: '2025-03-27'
                         averageBid: 1.0819
                         averageAsk: 1.0828
-                        averageMid: 1.0824
+                        highBid: 1.0827
+                        highAsk: 1.0827
+                        lowBid: 1.0826
+                        lowAsk: 1.0826
         '400':
           description: Validation error
         '502':
@@ -214,15 +220,27 @@ components:
         averageBid:
           type: number
           format: double
-          example: 1.0823
+          example: '1.07764'
         averageAsk:
           type: number
           format: double
-          example: 1.0831
-        averageMid:
+          example: '1.07780'
+        highBid:
           type: number
           format: double
-          example: 1.0827
+          example: '1.08020'
+        highAsk:
+          type: number
+          format: double
+          example: '1.08035'
+        lowBid:
+          type: number
+          format: double
+          example: '1.07322'
+        lowAsk:
+          type: number
+          format: double
+          example: '1.07338'
 
     FxRatesResponse:
       type: object
