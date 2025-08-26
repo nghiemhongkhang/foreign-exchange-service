@@ -25,6 +25,8 @@ Features include:
 foreign-exchange-service/
 ├── api-spec        # OpenAPI spec, generated DTOs/interfaces
 ├── impl            # Main service implementation
+│   ├── client      # Web client for external services
+│   ├── config      # Application config
 │   ├── controller  # REST controllers
 │   ├── service     # Business logic
 │   ├── repository  # Spring Data JPA repositories
