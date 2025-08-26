@@ -11,13 +11,14 @@ Features include:
 
 ## Tech Stack
 
-- **Java 17**, **Spring Boot 3**
-- **Maven** (multi-module: `api-spec`, `impl`)
-- **Spring Data JPA** + **H2 Database**
-- **Springdoc OpenAPI** for API docs
-- **MapStruct** for mapping
-- **JUnit 5 + Mockito** for testing
-- **Docker** for containerization
+- Java 17, Spring Boot 3
+- Maven (multi-module: `api-spec`, `impl`)
+- Spring Data JPA + H2 Database
+- Springdoc OpenAPI for API docs
+- MapStruct for mapping
+- JUnit 5 + Mockito for testing
+- Docker for containerization
+- API-First approach using OpenAPI specification
 
 ## Project Structure
 
@@ -112,7 +113,7 @@ The scheduled job `FxSyncJob`:
 
 ## Database
 
-- Default: **H2 in-memory** (`jdbc:h2:mem:fxdb`)
+- Default: H2 in-memory (`jdbc:h2:mem:fxdb`)
 - Console: [http://localhost:8080/api/h2-console](http://localhost:8080/api/h2-console)
 
 ## Tests
