@@ -1,6 +1,5 @@
 package com.nhk.fx.client.oanda;
 
-import com.nhk.fx.client.oanda.model.OandaResponse;
 import com.nhk.fx.exception.model.UpstreamException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;

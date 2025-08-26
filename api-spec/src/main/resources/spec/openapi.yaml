@@ -149,6 +149,8 @@ paths:
                     source: 'OANDA FXDS'
                     base: EUR
                     quote: USD
+                    baseName: Euro
+                    quoteName: US Dollar
                     startDate: '2025-03-26'
                     endDate: '2025-03-27'
                     points:
@@ -244,7 +246,7 @@ components:
 
     FxRatesResponse:
       type: object
-      required: [updateTime, source, base, quote, startDate, endDate, points]
+      required: [updateTime, source, base, baseName, quoteName, quote, startDate, endDate, points]
       properties:
         updateTime:
           type: string
@@ -256,9 +258,15 @@ components:
         base:
           type: string
           pattern: '^[A-Z]{3}$'
+        baseName:
+          type: string
+          example: 'Dollar'
         quote:
           type: string
           pattern: '^[A-Z]{3}$'
+        quoteName:
+          type: string
+          example: 'Euro'
         startDate:
           type: string
           example: '2025-03-26'

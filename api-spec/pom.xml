@@ -83,13 +83,13 @@
                                 <modelPackage>com.nhk.fx.dto</modelPackage>
                             </configOptions>
                             <typeMappings>
-                                <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
+                                <typeMapping>OffsetDateTime=java.time.Instant</typeMapping>
                                 <typeMapping>Pageable=org.springframework.data.domain.Pageable</typeMapping>
                                 <typeMapping>Timestamp=Instant</typeMapping>
                                 <typeMapping>Double=java.math.BigDecimal</typeMapping>
                             </typeMappings>
                             <importMappings>
-                                <importMapping>java.time.OffsetDateTime=java.time.LocalDateTime</importMapping>
+                                <importMapping>java.time.OffsetDateTime=java.time.Instant</importMapping>
                                 <importMapping>Pageable=org.springframework.data.domain.Pageable</importMapping>
                                 <importMapping>Instant=java.time.Instant</importMapping>
                                 <importMapping>BigDecimal=java.math.BigDecimal</importMapping>

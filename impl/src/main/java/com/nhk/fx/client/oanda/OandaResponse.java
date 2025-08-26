@@ -1,4 +1,4 @@
-package com.nhk.fx.client.oanda.model;
+package com.nhk.fx.client.oanda;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

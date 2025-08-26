@@ -1,6 +1,6 @@
 package com.nhk.fx.mapper;
 
-import com.nhk.fx.client.oanda.model.OandaPoint;
+import com.nhk.fx.client.oanda.OandaPoint;
 import com.nhk.fx.dto.FxPoint;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
