@@ -9,7 +9,6 @@ import com.nhk.fx.repository.FxDailyRateRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -34,29 +33,33 @@ public class FxSyncJob {
     private static final DateTimeFormatter DATE_FMT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneOffset.UTC);
 
-    @Autowired
-    OandaClient oandaClient;
+    private final OandaClient oandaClient;
+    private final CurrencyRepository currencyRepository;
+    private final FxDailyRateRepository fxDailyRateRepository;
 
-    @Autowired
-    CurrencyRepository currencyRepository;
+    private final String zone;
+    private final int lookbackDays;
+    private final String quote;
+    private final String excludeBases;
+    private final String cronExpr;
 
-    @Autowired
-    FxDailyRateRepository fxDailyRateRepository;
-
-    @Value("${fxsync.cron}")
-    private String cronExpr;
-
-    @Value("${fxsync.zone:UTC}")
-    private String zone;
-
-    @Value("${fxsync.lookback-days:3}")
-    private int lookbackDays;
-
-    @Value("${fxsync.quote:USD}")
-    private String quote;
-
-    @Value("${fxsync.exclude-bases:USD}")
-    private String excludeBases;
+    public FxSyncJob(OandaClient oandaClient,
+                     CurrencyRepository currencyRepository,
+                     FxDailyRateRepository fxDailyRateRepository,
+                     @Value("${fxsync.zone:UTC}") String zone,
+                     @Value("${fxsync.lookback-days:3}") int lookbackDays,
+                     @Value("${fxsync.quote:USD}") String quote,
+                     @Value("${fxsync.exclude-bases:USD}") String excludeBases,
+                     @Value("${fxsync.cron}") String cronExpr) {
+        this.oandaClient = oandaClient;
+        this.currencyRepository = currencyRepository;
+        this.fxDailyRateRepository = fxDailyRateRepository;
+        this.zone = zone;
+        this.lookbackDays = lookbackDays;
+        this.quote = quote;
+        this.excludeBases = excludeBases;
+        this.cronExpr = cronExpr;
+    }
 
     @Scheduled(cron = "${fxsync.cron}", zone = "${fxsync.zone:UTC}")
     @Transactional

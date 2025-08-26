@@ -4,7 +4,6 @@ import com.nhk.fx.dto.CurrencyCreateRequest;
 import com.nhk.fx.dto.CurrencyResponse;
 import com.nhk.fx.dto.CurrencyUpdateRequest;
 import com.nhk.fx.service.CurrencyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,8 +13,11 @@ import java.util.List;
 @RestController
 public class CurrencyController implements CurrenciesApi {
 
-    @Autowired
-    CurrencyService currencyService;
+    private final CurrencyService currencyService;
+
+    public CurrencyController(CurrencyService currencyService) {
+        this.currencyService = currencyService;
+    }
 
     @Override
     public ResponseEntity<CurrencyResponse> createCurrency(CurrencyCreateRequest currencyCreateRequest) {

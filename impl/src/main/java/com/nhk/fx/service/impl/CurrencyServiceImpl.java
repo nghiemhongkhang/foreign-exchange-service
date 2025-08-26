@@ -8,7 +8,6 @@ import com.nhk.fx.exception.model.BusinessException;
 import com.nhk.fx.mapper.CurrencyMapper;
 import com.nhk.fx.repository.CurrencyRepository;
 import com.nhk.fx.service.CurrencyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,11 +17,14 @@ import java.util.List;
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
 
-    @Autowired
-    CurrencyRepository currencyRepository;
+    private final CurrencyRepository currencyRepository;
+    private final CurrencyMapper currencyMapper;
 
-    @Autowired
-    CurrencyMapper currencyMapper;
+    public CurrencyServiceImpl(CurrencyRepository currencyRepository,
+                               CurrencyMapper currencyMapper) {
+        this.currencyRepository = currencyRepository;
+        this.currencyMapper = currencyMapper;
+    }
 
     @Override
     public List<CurrencyResponse> listAllSortedByCode() {

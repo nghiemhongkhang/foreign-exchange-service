@@ -8,7 +8,6 @@ import com.nhk.fx.mapper.FxMapper;
 import com.nhk.fx.repository.CurrencyRepository;
 import com.nhk.fx.service.FxService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -18,17 +17,21 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class FxServiceImpl implements FxService {
 
-    @Autowired
-    private OandaClient oandaClient;
-
-    @Autowired
-    private FxMapper mapper;
-
-    @Autowired
-    private CurrencyRepository currencyRepository;
+    private final OandaClient oandaClient;
+    private final FxMapper mapper;
+    private final CurrencyRepository currencyRepository;
 
     private static final DateTimeFormatter UPDATE_FMT =
             DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss").withZone(ZoneOffset.UTC);
+
+    public FxServiceImpl(OandaClient oandaClient,
+                         FxMapper mapper,
+                         CurrencyRepository currencyRepository) {
+        this.oandaClient = oandaClient;
+        this.mapper = mapper;
+        this.currencyRepository = currencyRepository;
+    }
+
 
     @Override
     public FxRatesResponse getRates(String base, String quote, String startDate, String endDate) {
