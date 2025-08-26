@@ -9,8 +9,6 @@ Features include:
 - OpenAPI/Swagger documentation
 - Dockerized for easy deployment
 
----
-
 ## Tech Stack
 
 - **Java 17**, **Spring Boot 3**
@@ -20,8 +18,6 @@ Features include:
 - **MapStruct** for mapping
 - **JUnit 5 + Mockito** for testing
 - **Docker** for containerization
-
----
 
 ## Project Structure
 
@@ -38,9 +34,6 @@ foreign-exchange-service/
 │   └── resources   # application.properties, schema.sql, data.sql
 └── Dockerfile
 ```
-
----
-
 ## Running Locally
 
 ### Prerequisites
@@ -60,8 +53,6 @@ App will be available at:
 http://localhost:8080/api
 ```
 
----
-
 ## Running with Docker
 
 ### Build the image
@@ -73,8 +64,6 @@ docker build -t fx-service .
 ```bash
 docker run --rm -p 8080:8080 fx-service
 ```
-
----
 
 ## Configuration
 
@@ -105,14 +94,10 @@ fxsync.exclude-bases=USD
 springdoc.api-docs.path=/api-docs
 ```
 
----
-
 ## API Documentation
 
 - Swagger UI → [http://localhost:8080/api/swagger-ui.html](http://localhost:8080/api/swagger-ui.html)
 - OpenAPI JSON → [http://localhost:8080/api/api-docs](http://localhost:8080/api/api-docs)
-
----
 
 ## Scheduler
 
@@ -123,13 +108,11 @@ The scheduled job `FxSyncJob`:
 - Saves daily rates into `fx_daily_rates` table
 - Skips duplicates by `(base, quote, rate_date)`
 
----
-
 ## Database
 
 - Default: **H2 in-memory** (`jdbc:h2:mem:fxdb`)
 - Console: [http://localhost:8080/api/h2-console](http://localhost:8080/api/h2-console)
----
+
 ## Tests
 
 Run unit tests:
@@ -142,9 +125,6 @@ Covers:
 - Services
 - Scheduler
 - Exception handling
-
----
-
 
 ## Notes
 
