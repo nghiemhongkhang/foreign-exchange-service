@@ -97,7 +97,7 @@ public class FxSyncJob {
                     LocalDate.parse(DATE_FMT.format(Instant.parse(p.closeTime())));
 
             if (fxDailyRateRepository.existsByBaseAndQuoteAndRateDate(base, quote, rateDate)) {
-                log.info("Skip existing {}->{} {}", base, quote, rateDate);
+                log.debug("Skip existing {}->{} {}", base, quote, rateDate);
                 continue;
             }
 

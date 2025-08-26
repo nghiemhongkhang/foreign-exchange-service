@@ -1,4 +1,4 @@
-package com.nhk.fx.client;
+package com.nhk.fx.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
